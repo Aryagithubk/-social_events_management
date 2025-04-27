@@ -9,7 +9,5 @@
 @endphp
 
 <div class="flex-shrink-0">
-    <img src="{{ asset('images/aamir.png') }}" 
-         alt="{{ config('app.name') }}" 
-         {{ $attributes->merge(['class' => $classes . ' rounded-full object-cover border-2 border-gray-200 shadow-sm']) }}>
-</div> 
+    <img src="{{ asset('images/logo1.png') }}" alt="{{ config('app.name') }}" {{ $attributes->merge(['class' => $classes . ' rounded-full object-cover border-2 border-gray-200 shadow-sm']) }}>
+</div>

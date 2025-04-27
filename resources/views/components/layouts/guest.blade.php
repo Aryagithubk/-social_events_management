@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+]<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
@@ -22,9 +22,9 @@
                 </a>
             </div>
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
+            <div class="w-full max-w-4xl mt-6 px-8 py-6 bg-white shadow-lg overflow-hidden sm:rounded-lg">
                 {{ $slot }}
             </div>
         </div>
     </body>
-</html> 
+</html>

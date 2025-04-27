@@ -1,111 +1,115 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('RSVPs for ') }} {{ $event->title }}
+        <div class="flex justify-between items-center animate-fade-in-down">
+            <h2 class="font-bold text-2xl text-gray-800 tracking-wide">
+                {{ __('RSVP Dashboard for') }} <span class="text-indigo-600">{{ $event->title }}</span>
             </h2>
-            <a href="{{ route('events.show', $event) }}" class="text-gray-600 hover:text-gray-900">
-                Back to Event
+            <a href="{{ route('events.show', $event) }}" class="text-indigo-500 hover:text-indigo-700 font-semibold transition duration-300">
+                ← Back to Event
             </a>
         </div>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <div class="mb-6">
-                        <h3 class="text-lg font-semibold mb-4">RSVP Summary</h3>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div class="bg-green-100 p-4 rounded-lg">
-                                <p class="text-sm text-green-800">Accepted</p>
-                                <p class="text-2xl font-bold text-green-800">
-                                    {{ $event->rsvps->where('status', 'accepted')->count() }}
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white shadow-xl rounded-xl p-8 animate-fade-in-up">
+                <div class="mb-10">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-6 border-b pb-2">RSVP Summary</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        @php
+                            $statuses = [
+                                'accepted' => ['color' => 'green'],
+                                'declined' => ['color' => 'red'],
+                                'pending' => ['color' => 'yellow'],
+                                'maybe' => ['color' => 'blue'],
+                            ];
+                        @endphp
+
+                        @foreach($statuses as $status => $info)
+                            <div class="bg-{{ $info['color'] }}-100 hover:scale-105 transform transition duration-300 rounded-lg p-6 flex flex-col items-center justify-center">
+                                <p class="text-sm font-medium text-{{ $info['color'] }}-800 uppercase">{{ ucfirst($status) }}</p>
+                                <p class="text-3xl font-bold text-{{ $info['color'] }}-800 mt-2">
+                                    {{ $event->rsvps->where('status', $status)->count() }}
                                 </p>
                             </div>
-                            <div class="bg-red-100 p-4 rounded-lg">
-                                <p class="text-sm text-red-800">Declined</p>
-                                <p class="text-2xl font-bold text-red-800">
-                                    {{ $event->rsvps->where('status', 'declined')->count() }}
-                                </p>
-                            </div>
-                            <div class="bg-yellow-100 p-4 rounded-lg">
-                                <p class="text-sm text-yellow-800">Pending</p>
-                                <p class="text-2xl font-bold text-yellow-800">
-                                    {{ $event->rsvps->where('status', 'pending')->count() }}
-                                </p>
-                            </div>
-                            <div class="bg-blue-100 p-4 rounded-lg">
-                                <p class="text-sm text-blue-800">Maybe</p>
-                                <p class="text-2xl font-bold text-blue-800">
-                                    {{ $event->rsvps->where('status', 'maybe')->count() }}
-                                </p>
-                            </div>
-                        </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-6 border-b pb-2">All Guest Responses</h3>
+                    <div class="overflow-x-auto rounded-lg shadow-md">
+                        <table class="min-w-full table-auto divide-y divide-gray-200">
+                            <thead class="bg-indigo-50">
+                                <tr class="text-gray-700 text-sm uppercase tracking-wider">
+                                    <th class="px-6 py-4 text-left">Guest</th>
+                                    <th class="px-6 py-4 text-left">Email</th>
+                                    <th class="px-6 py-4 text-left">Status</th>
+                                    <th class="px-6 py-4 text-left">Guests #</th>
+                                    <th class="px-6 py-4 text-left">Special Request</th>
+                                    <th class="px-6 py-4 text-left">Update</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-100">
+                                @foreach($rsvps as $rsvp)
+                                    <tr class="hover:bg-gray-50 transition duration-300">
+                                        <td class="px-6 py-4">
+                                            <div class="text-base font-semibold text-gray-800">{{ $rsvp->guest->name }}</div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="text-sm text-gray-600">{{ $rsvp->guest->email }}</div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-3 py-1 rounded-full text-xs font-medium
+                                                @if($rsvp->status === 'accepted') bg-green-200 text-green-800
+                                                @elseif($rsvp->status === 'declined') bg-red-200 text-red-800
+                                                @elseif($rsvp->status === 'pending') bg-yellow-200 text-yellow-800
+                                                @else bg-blue-200 text-blue-800 @endif">
+                                                {{ ucfirst($rsvp->status) }}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">
+                                            {{ $rsvp->number_of_guests }}
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">
+                                            {{ $rsvp->special_requests ?? 'None' }}
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <form action="{{ route('rsvps.update-status', ['rsvp' => $rsvp->id]) }}" method="POST" class="inline-block">
+                                                @csrf
+                                                @method('PUT')
+                                                <select name="status" onchange="this.form.submit()" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm transition">
+                                                    <option value="pending" {{ $rsvp->status === 'pending' ? 'selected' : '' }}>Pending</option>
+                                                    <option value="accepted" {{ $rsvp->status === 'accepted' ? 'selected' : '' }}>Accepted</option>
+                                                    <option value="declined" {{ $rsvp->status === 'declined' ? 'selected' : '' }}>Declined</option>
+                                                    <option value="maybe" {{ $rsvp->status === 'maybe' ? 'selected' : '' }}>Maybe</option>
+                                                </select>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
 
-                    <div>
-                        <h3 class="text-lg font-semibold mb-4">All RSVPs</h3>
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Guest</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Number of Guests</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Special Requests</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
-                                    @foreach($rsvps as $rsvp)
-                                        <tr>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm font-medium text-gray-900">{{ $rsvp->guest->name }}</div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm text-gray-500">{{ $rsvp->guest->email }}</div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <span class="px-2 py-1 rounded-full text-xs 
-                                                    @if($rsvp->status === 'accepted') bg-green-100 text-green-800
-                                                    @elseif($rsvp->status === 'declined') bg-red-100 text-red-800
-                                                    @elseif($rsvp->status === 'pending') bg-yellow-100 text-yellow-800
-                                                    @else bg-blue-100 text-blue-800 @endif">
-                                                    {{ ucfirst($rsvp->status) }}
-                                                </span>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm text-gray-500">{{ $rsvp->number_of_guests }}</div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <div class="text-sm text-gray-500">{{ $rsvp->special_requests ?? 'None' }}</div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                <form action="{{ route('rsvps.update-status', ['rsvp' => $rsvp->id]) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <select name="status" onchange="this.form.submit()" class="text-sm border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                                                        <option value="pending" {{ $rsvp->status === 'pending' ? 'selected' : '' }}>Pending</option>
-                                                        <option value="accepted" {{ $rsvp->status === 'accepted' ? 'selected' : '' }}>Accepted</option>
-                                                        <option value="declined" {{ $rsvp->status === 'declined' ? 'selected' : '' }}>Declined</option>
-                                                        <option value="maybe" {{ $rsvp->status === 'maybe' ? 'selected' : '' }}>Maybe</option>
-                                                    </select>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="mt-4">
-                            {{ $rsvps->links() }}
-                        </div>
+                    <div class="mt-8">
+                        {{ $rsvps->links('pagination::tailwind') }}
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout> 
+
+    <style>
+        @keyframes fade-in-down {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fade-in-up {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-down { animation: fade-in-down 0.6s ease-out both; }
+        .animate-fade-in-up { animation: fade-in-up 0.6s ease-out both; }
+    </style>
+</x-app-layout>

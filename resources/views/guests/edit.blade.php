@@ -1,49 +1,51 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-3xl text-gray-900 leading-tight animate__animated animate__fadeIn">
             {{ __('Edit Guest') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-16 bg-gray-50">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <form method="POST" action="{{ route('guests.update', $guest) }}" class="space-y-6">
+            <div class="bg-white shadow-lg rounded-xl p-8">
+                <div class="text-gray-900">
+                    <form method="POST" action="{{ route('guests.update', $guest) }}" class="space-y-8 animate__animated animate__fadeInUp">
                         @csrf
                         @method('PUT')
 
-                        <div>
-                            <x-input-label for="name" :value="__('Name')" />
-                            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $guest->name)" required autofocus />
-                            <x-input-error class="mt-2" :messages="$errors->get('name')" />
+                        <div class="space-y-6">
+                            <div>
+                                <x-input-label for="name" :value="__('Name')" class="text-lg font-semibold" />
+                                <x-text-input id="name" name="name" type="text" class="w-full px-5 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-indigo-500 transition-all" :value="old('name', $guest->name)" required autofocus />
+                                <x-input-error class="mt-2 text-red-400" :messages="$errors->get('name')" />
+                            </div>
+
+                            <div>
+                                <x-input-label for="email" :value="__('Email')" class="text-lg font-semibold" />
+                                <x-text-input id="email" name="email" type="email" class="w-full px-5 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-indigo-500 transition-all" :value="old('email', $guest->email)" required />
+                                <x-input-error class="mt-2 text-red-400" :messages="$errors->get('email')" />
+                            </div>
+
+                            <div>
+                                <x-input-label for="phone" :value="__('Phone Number')" class="text-lg font-semibold" />
+                                <x-text-input id="phone" name="phone" type="tel" class="w-full px-5 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-indigo-500 transition-all" :value="old('phone', $guest->phone)" />
+                                <x-input-error class="mt-2 text-red-400" :messages="$errors->get('phone')" />
+                            </div>
+
+                            <div>
+                                <x-input-label for="notes" :value="__('Notes')" class="text-lg font-semibold" />
+                                <textarea id="notes" name="notes" class="w-full px-5 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-indigo-500 transition-all" rows="4">{{ old('notes', $guest->notes) }}</textarea>
+                                <x-input-error class="mt-2 text-red-400" :messages="$errors->get('notes')" />
+                            </div>
                         </div>
 
-                        <div>
-                            <x-input-label for="email" :value="__('Email')" />
-                            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $guest->email)" required />
-                            <x-input-error class="mt-2" :messages="$errors->get('email')" />
-                        </div>
-
-                        <div>
-                            <x-input-label for="phone" :value="__('Phone Number')" />
-                            <x-text-input id="phone" name="phone" type="tel" class="mt-1 block w-full" :value="old('phone', $guest->phone)" />
-                            <x-input-error class="mt-2" :messages="$errors->get('phone')" />
-                        </div>
-
-                        <div>
-                            <x-input-label for="notes" :value="__('Notes')" />
-                            <textarea id="notes" name="notes" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" rows="3">{{ old('notes', $guest->notes) }}</textarea>
-                            <x-input-error class="mt-2" :messages="$errors->get('notes')" />
-                        </div>
-
-                        <div class="flex items-center gap-4">
-                            <x-primary-button>{{ __('Update Guest') }}</x-primary-button>
-                            <a href="{{ route('guests.show', $guest) }}" class="text-gray-600 hover:text-gray-900">Cancel</a>
+                        <div class="flex items-center gap-8 mt-8">
+                            <x-primary-button class="px-6 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-all duration-300">{{ __('Update Guest') }}</x-primary-button>
+                            <a href="{{ route('guests.show', $guest) }}" class="text-indigo-600 hover:text-indigo-700 transition duration-300">Cancel</a>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout> 
+</x-app-layout>

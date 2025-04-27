@@ -32,7 +32,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('guests', GuestController::class);
     Route::resource('rsvps', RSVPController::class);
     
-    // Additional routes for event management
+    // Additional routes for Social Event Management
     Route::get('events/{event}/guests', [EventController::class, 'guests'])->name('events.guests');
     Route::get('events/{event}/rsvps', [EventController::class, 'rsvps'])->name('events.rsvps');
     Route::post('events/{event}/invite', [EventController::class, 'invite'])->name('events.invite');
